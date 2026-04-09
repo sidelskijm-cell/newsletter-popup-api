@@ -1,3 +1,9 @@
+function setCors(res) {
+  res.setHeader('Access-Control-Allow-Origin', 'https://whitehack.store');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
 async function getAccessToken(shop, clientId, clientSecret) {
   const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`, {
     method: 'POST',
@@ -22,6 +28,12 @@ async function getAccessToken(shop, clientId, clientSecret) {
 }
 
 export default async function handler(req, res) {
+  setCors(res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
